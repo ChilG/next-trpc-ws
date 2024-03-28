@@ -6,6 +6,7 @@ import {createExpressMiddleware} from '@trpc/server/adapters/express';
 import {applyWSSHandler} from '@trpc/server/adapters/ws';
 import {WebSocketServer} from 'ws';
 import cors from 'cors';
+import {info} from './src/server/logger';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -31,7 +32,7 @@ nextServer.prepare().then(() => {
 
   const server = app.listen(port, (err?: Error) => {
     if (err) throw err;
-    console.log(`> Ready on http://localhost:${port}`);
+    info(`> Ready on http://localhost:${port}`);
   });
 
   let wss;
@@ -45,13 +46,13 @@ nextServer.prepare().then(() => {
   const handler = applyWSSHandler<AppRouter>({wss, router: appRouter, createContext: createTRPCContext});
 
   wss.on('connection', (ws) => {
-    console.log(`➕➕ Connection (${wss.clients.size})`);
+    dev && info(`➕➕ Connection (${wss.clients.size})`);
     ws.once('close', () => {
-      console.log(`➖➖ Connection (${wss.clients.size})`);
+      dev && info(`➖➖ Connection (${wss.clients.size})`);
     });
   });
 
-  console.log('> WebSocket Server listening on ws://localhost:3000');
+  info('> WebSocket Server listening on ws://localhost:3000');
 
   process.on('SIGTERM', () => {
     console.log('SIGTERM');
