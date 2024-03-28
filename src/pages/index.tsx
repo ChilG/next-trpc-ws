@@ -5,7 +5,7 @@ export default function IndexPage() {
 
   const addPost = api.test.add.useMutation();
 
-  const subscription = api.test.onAdd.useSubscription(undefined, {
+  api.test.onAdd.useSubscription(undefined, {
     onData(data) {
       console.log('received', data);
     },
