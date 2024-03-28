@@ -2,6 +2,7 @@ import {createWSClient, httpLink, loggerLink, splitLink, wsLink} from '@trpc/cli
 import {createTRPCNext} from '@trpc/next';
 import {type inferRouterInputs, type inferRouterOutputs} from '@trpc/server';
 import {AppRouter} from '../server/api/root';
+import superjson from 'superjson';
 
 const getBaseApiUrl = () => {
   if (typeof window !== 'undefined') return ''; // browser should use relative url
@@ -22,6 +23,7 @@ const wsClient = createWSClient({
 export const api = createTRPCNext<AppRouter>({
   config() {
     return {
+      transformer: superjson,
       links: [
         loggerLink({
           enabled: (opts) =>
