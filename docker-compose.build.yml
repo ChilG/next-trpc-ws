@@ -1,8 +1,32 @@
 version: "3.9"
 services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: next-trpc-ws
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    ports:
+      - "5654:5432"
+    expose:
+      - 5654
+
+  redis:
+    image: redis/redis-stack-server
+    restart: always
+    command: bash -c "redis-server --appendonly yes --requirepass mypassword"
+    ports:
+      - "6574:6379"
+
   web:
     build: ./
     platform: linux/amd64
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mypassword@host.docker.internal:5654/next-trpc-ws?schema=public
+      - REDIS_URL=redis://default:mypassword@host.docker.internal:6574
