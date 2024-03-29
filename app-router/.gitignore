@@ -38,6 +38,3 @@ next-env.d.ts
 
 # environment
 .env
-
-# database
-/database

@@ -21,12 +21,22 @@ services:
     ports:
       - "6574:6379"
 
-  web:
-    build: ./
+  app-router:
+    build: ./app-router
     platform: linux/amd64
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mypassword@host.docker.internal:5654/next-trpc-ws?schema=public
+      - REDIS_URL=redis://default:mypassword@host.docker.internal:6574
+
+  page-router:
+    build: ./page-router
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "3001:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:mypassword@host.docker.internal:5654/next-trpc-ws?schema=public
       - REDIS_URL=redis://default:mypassword@host.docker.internal:6574
