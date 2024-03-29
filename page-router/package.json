@@ -1,7 +1,8 @@
 {
   "name": "next-trpc-ws",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "author": "ChilG",
+  "license": "MIT",
   "scripts": {
     "dev": "nodemon",
     "build": "next build && tsc --project tsconfig.server.json",
