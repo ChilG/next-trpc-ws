@@ -3,7 +3,7 @@
 import React, {useMemo, useState} from 'react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {httpLink, loggerLink, splitLink, wsLink} from '@trpc/client';
-import {getBaseApiUrl, trpc, wsClient} from '../../utils/api';
+import {api, getBaseApiUrl, wsClient} from '../../utils/api';
 import superjson from 'superjson';
 
 interface TrpcProviderProps {
@@ -14,7 +14,7 @@ const TrpcProvider: React.FC<TrpcProviderProps> = ({children}) => {
   const [queryClient] = useState(() => new QueryClient());
 
   const trpcClient = useMemo(() => {
-    return trpc.createClient({
+    return api.createClient({
       transformer: superjson,
       links: [
         loggerLink({
@@ -37,9 +37,9 @@ const TrpcProvider: React.FC<TrpcProviderProps> = ({children}) => {
   }, []);
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </trpc.Provider>
+    </api.Provider>
   );
 };
 

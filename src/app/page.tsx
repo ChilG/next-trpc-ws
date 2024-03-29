@@ -1,6 +1,11 @@
+'use client';
+
+import React from 'react';
 import {api} from '../utils/api';
 
-export default function IndexPage() {
+interface PageProps {}
+
+const Page: React.FC<PageProps> = (props) => {
   const testQuery = api.test.one.useQuery();
 
   const addPost = api.test.add.useMutation();
@@ -26,4 +31,6 @@ export default function IndexPage() {
       </button>
     </div>
   );
-}
+};
+
+export default Page;

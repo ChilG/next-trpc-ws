@@ -1,8 +1,6 @@
-import {createWSClient, httpLink, loggerLink, splitLink, wsLink} from '@trpc/client';
-import {createTRPCNext} from '@trpc/next';
+import {createWSClient} from '@trpc/client';
 import {type inferRouterInputs, type inferRouterOutputs} from '@trpc/server';
 import {AppRouter} from '../server/api/root';
-import superjson from 'superjson';
 import {createTRPCReact} from '@trpc/react-query';
 
 export const getBaseApiUrl = () => {
@@ -21,33 +19,7 @@ export const wsClient = createWSClient({
   url: `${getBaseWsUrl()}/ws/trpc`,
 });
 
-export const api = createTRPCNext<AppRouter>({
-  config() {
-    return {
-      transformer: superjson,
-      links: [
-        loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === 'development' || (opts.direction === 'down' && opts.result instanceof Error),
-        }),
-        splitLink({
-          condition(op) {
-            return op.type === 'subscription';
-          },
-          true: wsLink({
-            client: wsClient,
-          }),
-          false: httpLink({
-            url: `${getBaseApiUrl()}/api/trpc`,
-          }),
-        }),
-      ],
-    };
-  },
-  ssr: false,
-});
-
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export const trpc = createTRPCReact<AppRouter>();
+export const api = createTRPCReact<AppRouter>();
