@@ -1,7 +1,8 @@
-import {createWSClient} from '@trpc/client';
+import {createWSClient, httpLink, loggerLink, splitLink, wsLink} from '@trpc/client';
 import {type inferRouterInputs, type inferRouterOutputs} from '@trpc/server';
 import {AppRouter} from '../server/api/root';
-import {createTRPCReact} from '@trpc/react-query';
+import {createTRPCNext} from '@trpc/next';
+import superjson from 'superjson';
 
 export const getBaseApiUrl = () => {
   if (typeof window !== 'undefined') return ''; // browser should use relative url
@@ -22,4 +23,28 @@ export const wsClient = createWSClient({
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export const api = createTRPCReact<AppRouter>();
+export const api = createTRPCNext<AppRouter>({
+  config() {
+    return {
+      transformer: superjson,
+      links: [
+        loggerLink({
+          enabled: (opts) =>
+            process.env.NODE_ENV === 'development' || (opts.direction === 'down' && opts.result instanceof Error),
+        }),
+        splitLink({
+          condition(op) {
+            return op.type === 'subscription';
+          },
+          true: wsLink({
+            client: wsClient,
+          }),
+          false: httpLink({
+            url: `${getBaseApiUrl()}/api/trpc`,
+          }),
+        }),
+      ],
+    };
+  },
+  ssr: false,
+});
