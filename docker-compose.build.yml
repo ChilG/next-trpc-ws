@@ -1,5 +1,26 @@
 version: "3.9"
 services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: next-trpc-ws
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ck6vKeQdAeEeXpM6
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    ports:
+      - "5654:5432"
+    expose:
+      - 5654
+
+  redis:
+    image: redis/redis-stack-server
+    restart: always
+    command: bash -c "redis-server --appendonly yes --requirepass ck6vKeQdAeEeXpM6"
+    ports:
+      - "6574:6379"
+
   web:
     build: ./
     platform: linux/amd64

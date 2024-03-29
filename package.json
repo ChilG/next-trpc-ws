@@ -11,7 +11,8 @@
     "prisma:generate": "npx prisma generate && npx prisma format",
     "prisma:migrate": "npx prisma migrate dev --name update-database",
     "prisma:deploy": "npx prisma migrate deploy",
-    "prisma:pull": "npx prisma db pull"
+    "prisma:pull": "npx prisma db pull",
+    "prisma:studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
