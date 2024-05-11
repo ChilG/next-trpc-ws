@@ -6,6 +6,7 @@
 - ⚡ Full-stack React with Next.js
 - ⚡ WebSockets / Subscription support
 - ⚡ Database with Prisma
+- ⚡ Cache Memory with Redis
 - 🎨 ESLint + Prettier
 
 ## Commands
